@@ -9,24 +9,6 @@
         android:layout_height="fill_parent"
         android:clickable="true" />
 
-    <ImageButton
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:src="@drawable/main_icon_location"
-     />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="56dp"
-        android:text="Button" />
-
     <Button
         android:id="@+id/btn_search"
         android:layout_width="300dp"
@@ -34,7 +16,56 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
-        android:drawableRight="@drawable/main_map_icon_search_normal"
-    />
+        android:drawableRight="@drawable/main_map_icon_search_normal" />
+
+    <ImageButton
+        android:id="@+id/maplayers1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/btn_search"
+        android:layout_below="@+id/btn_search"
+        android:src="@drawable/main_icon_maplayers" />
+
+    <ImageButton
+        android:id="@+id/roadcondition1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/maplayers1"
+        android:layout_below="@+id/maplayers1"
+        android:src="@drawable/main_icon_roadcondition_off" />
+
+    <ImageButton
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/relativeLayout1"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="14dp"
+        android:src="@drawable/main_icon_location" />
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="10dip"
+        android:background="@drawable/ll_bg_d" >
+
+        <Button
+            android:id="@+id/btn_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:text="我的地图"/>
+
+        <Button
+            android:id="@+id/btn_path"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/btn_home"
+            android:text="路线" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

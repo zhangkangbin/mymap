@@ -1,4 +1,4 @@
-package com.app.adapter;
+package com.xiaobao.adapter;
 
 import java.util.List;
 

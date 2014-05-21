@@ -1,4 +1,4 @@
-package com.xiaobao.map;
+package com.xiaobao.ui;
 
 
 
@@ -39,6 +39,7 @@ import com.baidu.mapapi.search.MKSuggestionResult;
 import com.baidu.mapapi.search.MKTransitRouteResult;
 import com.baidu.mapapi.search.MKWalkingRouteResult;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
+import com.xiaobao.map.R;
 import com.xiaobao.tool.T;
 
 import android.support.v7.app.ActionBarActivity;
@@ -46,6 +47,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
@@ -55,6 +57,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -70,17 +73,24 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 	boolean isFirstLoc = true;//是否首次定位
 	public LocationClient mLocationClient = null;
 	public BDLocationListener myListener = new MyLocationListener();
+	
 	ImageButton   requestLocButton;
-	Button sousuo;
-	Button search;
+	ImageButton roadcondition;
+	ImageButton  maplayers;
+	Button btn_search;
+	Button btn_home;
+	
 	MKSearch mMKSearch = null  ;
 	LocationData locData = null;
 	MapController mMapController;
 	PopupOverlay pop ;
+	boolean road=true;//路况
+	boolean Map=true;//卫星图层
 	protected void onCreate(Bundle savedInstanceState) {
 
 
-
+		// 取消标题栏
+	//	requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		super.onCreate(savedInstanceState);
 		mBMapMan=new BMapManager(getApplication());
@@ -148,14 +158,23 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 
 			}
 		});
-		search =(Button) findViewById(R.id.btn_search);
+		
+		btn_search=(Button) findViewById(R.id.btn_search);
+		
+		btn_home=(Button) findViewById(R.id.btn_home);
+		
 		
 		requestLocButton=(ImageButton) findViewById(R.id.button1);
-		sousuo=(Button) findViewById(R.id.button2);
-
+		
+		maplayers =(ImageButton) findViewById(R.id.maplayers1);
+		roadcondition=(ImageButton) findViewById(R.id.roadcondition1);
+		
+		//roadcondition.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.main_icon_roadcondition_off));
 		requestLocButton.setOnClickListener(this);
-		sousuo.setOnClickListener(this);
-		search.setOnClickListener(this);
+		roadcondition.setOnClickListener(this);
+		maplayers.setOnClickListener(this);
+		btn_search.setOnClickListener(this);
+		btn_home.setOnClickListener(this);
 
 	}
 
@@ -210,7 +229,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 				sb.append(location.getAddrStr());
 				locData.latitude = location.getLatitude();
 				locData.longitude = location.getLongitude();
-				mMapController.setZoom(20);//设置地图zoom级别
+				
 
 				Bitmap[] bmps = new Bitmap[1];  
 				try {  
@@ -221,6 +240,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 				}  
 
 				if(isFirstLoc||isRequest){
+					mMapController.setZoom(20);//设置地图zoom级别
 					//弹窗弹出位置  
 					GeoPoint ptTAM = new GeoPoint((int)(locData.latitude* 1e6), (int)(locData.longitude *  1e6));  
 					//弹出pop,隐藏pop  
@@ -279,18 +299,51 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 		Log.i("test2", "shou dong click");
 
 			break;
-		case R.id.button2:
-			Log.i("test",locData.latitude+"---"+locData.longitude  );
-			//	mMKSearch.poiSearchNearBy("KFC", new GeoPoint((int) (locData.latitude * 1E6), (int) (locData.longitude * 1E6)), 5000); 
+		case R.id.roadcondition1:
+			Log.i("map", "test--roadcondition"+v.getId());
+			
+		 
+			//路况
+			if(road==true){
+				//roadcondition.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.main_icon_roadcondition_on));
+				mMapView.setTraffic(road);	
+				road=false;
+			}
+			else{
+				//roadcondition.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.main_icon_roadcondition_off));
+				mMapView.setTraffic(road);	
+				road=true;
+			}
+		
+			
+			break;
+		case R.id.maplayers1:
+			//卫星图
+			Log.i("map", "test--maplayers"+v.getId());
+			if(Map==true){
+	
+				mMapView.setSatellite(true);  
+				Map=false;
+			}
+			else{
+				
+				mMapView.setSatellite(false); 
+				Map=true;
+			}
+		
+			
 
-			//mMKSearch.suggestionSearch("肯德基", "深圳");
-			Intent i=new Intent(this, Searchresult.class);
-			startActivity(i);
 			break;
 		case R.id.btn_search:
 			Intent search=new Intent(this, Searchresult.class);
 			//激活一个待返回值的界面
 			startActivityForResult(search, 0);
+			break;
+		case R.id.btn_home:
+			Intent home=new Intent(this, myhome.class);
+			//激活一个待返回值的界面
+			startActivity(home);
+			break;
 		default:
 			break;
 		}
@@ -384,9 +437,17 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 		if(data!=null){
 			String address = data.getStringExtra("address");
 			String city=data.getStringExtra("city");
-			mMKSearch.poiSearchInCity(city, address);  
+			if(city!=null){
+				mMKSearch.poiSearchInCity(city, address);  
+			}
+			
+			else{
+				mMKSearch.poiSearchNearBy(address, new GeoPoint((int) (locData.latitude * 1E6), (int) (locData.longitude * 1E6)), 5000);  
+				
+			}
 			
 		}
+		
 
 }
 }

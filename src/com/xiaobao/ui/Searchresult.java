@@ -1,10 +1,9 @@
-package com.xiaobao.map;
+package com.xiaobao.ui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.app.adapter.MapAdapter;
 import com.baidu.mapapi.BMapManager;
 import com.baidu.mapapi.MKGeneralListener;
 import com.baidu.mapapi.map.MKEvent;
@@ -21,7 +20,10 @@ import com.baidu.mapapi.search.MKTransitRouteResult;
 import com.baidu.mapapi.search.MKWalkingRouteResult;
 
 
+import com.xiaobao.adapter.MapAdapter;
+import com.xiaobao.adapter.SearchGridview;
 import com.xiaobao.info.SearchInfo;
+import com.xiaobao.map.R;
 
 import com.xiaobao.tool.T;
 
@@ -49,9 +51,10 @@ public class Searchresult extends Activity implements OnItemClickListener{
 	List<SearchInfo> Infos;
 	private ListView listView;
 	MapAdapter adapter;
-
+	 GridView gridview;
 	SearchInfo searchinfo;
-	List<String> data;
+	SearchGridview  griddata;
+	
 	protected void onCreate(Bundle savedInstanceState) {
 
 
@@ -86,35 +89,40 @@ public class Searchresult extends Activity implements OnItemClickListener{
 		
 		
 		
-		 final GridView gridview = (GridView) findViewById(R.id.gridview);  
+		gridview= (GridView) findViewById(R.id.gridview);  
 	        
-	      //生成动态数组，并且转入数据  
-	      ArrayList<HashMap<String, Object>> lstImageItem = new ArrayList<HashMap<String, Object>>();  
-	      for(int i=0;i<9;i++)  
-	      {  
-	        HashMap<String, Object> map = new HashMap<String, Object>();  
-	        map.put("ItemImage", R.drawable.main_icon_location);//添加图像资源的ID  
-	    map.put("ItemText", "NO."+String.valueOf(i));//按序号做ItemText  
-	        lstImageItem.add(map);  
-	      }  
-	      //生成适配器的ImageItem <====> 动态数组的元素，两者一一对应  
-	      SimpleAdapter saImageItems = new SimpleAdapter(this, //没什么解释  
-	                                                lstImageItem,//数据来源   
-	                                                R.layout.night_item,//night_item的XML实现  
-	                                                  
-	                                                //动态数组与ImageItem对应的子项          
-	                                                new String[] {"ItemImage","ItemText"},   
-	                                                  
-	                                                //ImageItem的XML文件里面的一个ImageView,两个TextView ID  
-	                                                new int[] {R.id.ItemImage,R.id.ItemText});  
+	   SearchGridview saImageItems=new SearchGridview(Searchresult.this);
 	      //添加并且显示  
 	      gridview.setAdapter(saImageItems);  
+	      gridview.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				if(id<=2){
+
+					String address= "美食";
+						
+					
+					Intent intent  = new Intent();
+					intent.putExtra("address", address);
+				
+					setResult(0, intent);
+					finish();
+					
+				}
+			
+				Log.i("test2","您选择了" + id);
+				
+			}
+		});
 	      
 	      
 	  
-	      listView.setVisibility(View.INVISIBLE);
+	   listView.setVisibility(View.INVISIBLE);
 	      //显示
-	      gridview.setVisibility(View.VISIBLE);
+	    gridview.setVisibility(View.VISIBLE);
 	  
 	      //添加消息处理  
 		
@@ -267,6 +275,7 @@ public class Searchresult extends Activity implements OnItemClickListener{
 					Log.i("xiao", info.city.toString()+"___"+info.district+info.key);
 					String city=info.city;
 					String address=info.district;
+					info.toString();
 					String key=info.key;
 
 
